@@ -9,14 +9,6 @@ from aggregate import aggregate
 
 app = FastAPI()
 
-# Model Structure - Class
-class ModelParams(BaseModel):
-    email: str
-    classes_: List[float]
-    coef_: List[List[float]]
-    intercept_: List[float]
-    n_iter_: List[int]
-
 @app.get('/')
 def welcome():
     return "Hello"
