@@ -3,8 +3,6 @@
 # http://127.0.0.1:8000/docs for API docs (swagger.ui)
 
 from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List, Dict, Any
 from aggregate import aggregate
 
 app = FastAPI()
