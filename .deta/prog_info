@@ -1,0 +1,1 @@
+{"id":"1b7243e6-6ed7-4621-8fa8-4f665d1a25b3","space":7629,"runtime":"python3.7","name":"pegasus-server","path":"9n0ynb","project":"c080z8ub","account":"144798365827","region":"ap-southeast-1","deps":["fastapi","pandas"],"envs":null,"public":true,"log_level":"debug","cron":""}
