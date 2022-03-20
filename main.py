@@ -14,7 +14,6 @@ def welcome():
     return "Hello"
 
 
-#use any authentication to accept requests
 @app.get('/aggregate/{project_id}')
 def projectAggregation(project_id: str): 
     response = aggregate(project_id)
