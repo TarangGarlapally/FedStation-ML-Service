@@ -16,6 +16,6 @@ def welcome():
 def projectAggregation(project_id: str): 
     response = aggregate(project_id)
     if response == "success":
-        return {"response":"Okay 🥚"}
+        return {"response": "Success"}
     else:
-        return {"response": "Error somewhere 🤧"}
+        return {"response": "Aggregation Failed"}
