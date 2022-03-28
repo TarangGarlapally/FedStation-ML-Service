@@ -7,12 +7,6 @@ Firebase Credentials
 import pickle as pkl
 ''''''
 
-
-
-
-
-
-
 # Download models from firebase : Returns list of models
 def downloadModels(project_id):
     pass
