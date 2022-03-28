@@ -4,7 +4,9 @@
 
 from fastapi import FastAPI
 from aggregate import aggregate
+from firebase_init import initializeFirebase
 
+initializeFirebase()
 app = FastAPI()
 
 @app.get('/')

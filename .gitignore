@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#firebase admin service account config 
+fedstation-firebase-firebase-adminsdk-gp3fm-d691bf3872.json
