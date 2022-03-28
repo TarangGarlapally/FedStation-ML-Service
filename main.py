@@ -5,11 +5,8 @@
 from fastapi import FastAPI
 from aggregate import aggregate
 from firebase_init import initializeFirebase
-from firebase import downloadModels , uploadModel
 
 initializeFirebase()
-downloadModels("k_k")
-uploadModel("KKK")
 app = FastAPI()
 
 @app.get('/')
