@@ -13,6 +13,8 @@ import pickle as pkl
 
 # Download models from firebase : Returns list of models
 def downloadModels(project_id):
+    os.mkdir('model-files/')
+    os.mkdir('model-files/local')
     ds = storage.bucket()
     file_names = list()
     L = len(project_id)
@@ -49,13 +51,16 @@ def uploadModel(finalModel, project_id):
     bob = ds.blob("globalModels/"+project_id)
     bob.upload_from_filename("model-files/globalModel.pkl")
 
-    #removing all files in model-files/local 
+    #removing all files in model-files/local and globalmodel.pkl
     
     
     
     dir = 'model-files/local/'
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))
+    os.remove('model-files/globalModel.pkl')
+    os.rmdir('model-files/local')
+    os.rmdir('model-files')
     
     return "success"
 
