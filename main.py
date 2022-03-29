@@ -4,7 +4,9 @@
 
 from fastapi import FastAPI
 from aggregate import aggregate
+from firebase_init import initializeFirebase
 
+initializeFirebase()
 app = FastAPI()
 
 @app.get('/')
@@ -18,4 +20,4 @@ def projectAggregation(project_id: str):
     if response == "success":
         return {"response":"Okay"}
     else:
-        return {"response": "Okay"}
+        return {"response": "error"}

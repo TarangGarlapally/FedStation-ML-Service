@@ -46,8 +46,7 @@ def aggregate(project_id):
         elif isinstance(models[0], BaseEstimator) == True:
             finalModel = aggregateSKlearn(models)
         result = firebase.uploadModel(finalModel, project_id)
-        if(result["status"] == "success"):
-            return "success"
+        return result
     except:
         return "error"
     
