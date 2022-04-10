@@ -36,10 +36,19 @@ def uploadModel(project_id):
     bob.upload_from_filename("model-files/globalModel.pkl")
 
     #removing all files in model-files/local 
-    
-    
-    
     dir = 'model-files/local/'
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))
 
+
+
+# dowload Global Model url from Firebase
+def getGlobalModeldowloadURL(project_id):
+    ds = storage.bucket()
+    bob = ds.blob("globalModels/"+project_id)
+    dowloadURL  = bob._get_download_url(ds.client)      
+    return dowloadURL
+
+# upload Models to Firebase
+def uploadModelsToFirebase(project_id):
+    pass

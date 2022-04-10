@@ -1,3 +1,4 @@
 {
-  "python.analysis.extraPaths": ["./SKLearn Aggregators"]
+  "python.analysis.extraPaths": ["./SKLearn Aggregators"],
+  "terminal.integrated.fontSize": 16
 }
