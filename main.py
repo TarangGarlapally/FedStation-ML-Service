@@ -20,7 +20,7 @@ def welcome():
 def projectAggregation(project_id: str): 
     response = aggregate(project_id)
     if response == "success":
-        return {"response":"Okay 🥚"}
+        return {"response":"Okay"}
     else:
         return {"response": "Error somewhere 🤧"}
 
@@ -40,3 +40,4 @@ def dowloadGlobalModelFromFirebase(project_id: str):
 @app.post('/uploadModelToFirebase/{project_id}')
 async def uploadModelToFB(project_id : str , model : UploadFile):
     return await uploadModelToFirebase(project_id , model)
+
