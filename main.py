@@ -16,6 +16,24 @@ def welcome():
 def projectAggregation(project_id: str): 
     response = aggregate(project_id)
     if response == "success":
-        return {"response": "Success"}
+        return {"response":"Okay"}
     else:
-        return {"response": "Aggregation Failed"}
+        return {"response": "Error somewhere 🤧"}
+
+@app.get('/dowloadGlobalModelFromFirebase/{project_id}')
+def dowloadGlobalModelFromFirebase(project_id: str):
+    dowloadURL = getGlobalModeldowloadURL(project_id)
+
+    if(len(dowloadURL)== 0):
+        return {
+            "response" : "Error"
+        }
+    else : 
+        return {
+            "response" : dowloadURL
+        }
+
+@app.post('/uploadModelToFirebase/{project_id}')
+async def uploadModelToFB(project_id : str , model : UploadFile):
+    return await uploadModelToFirebase(project_id , model)
+
