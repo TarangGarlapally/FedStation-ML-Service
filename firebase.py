@@ -46,7 +46,7 @@ def downloadModels(project_id):
 
 # Upload model to firebase : Returns response object with status property
 def uploadModel(finalModel, project_id):
-    pkl.dump(finalModel, open("model-files/globalModel.pkl", 'wb')).
+    pkl.dump(finalModel, open("model-files/globalModel.pkl", 'wb'))
     ds = storage.bucket()
     print(ds.list_blobs)
     bob = ds.blob("globalModels/"+project_id)
