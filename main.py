@@ -2,9 +2,13 @@
 # Run using cmd:  uvicorn main:app --reload
 # http://127.0.0.1:8000/docs for API docs (swagger.ui)
 
-from fastapi import FastAPI
+from urllib import response
+from fastapi import FastAPI, UploadFile
 from aggregate import aggregate
+from firebase import getGlobalModeldowloadURL, uploadModelToFirebase
+from firebase_init import initializeFirebase
 
+initializeFirebase()
 app = FastAPI()
 
 @app.get('/')
@@ -36,4 +40,3 @@ def dowloadGlobalModelFromFirebase(project_id: str):
 @app.post('/uploadModelToFirebase/{project_id}')
 async def uploadModelToFB(project_id : str , model : UploadFile):
     return await uploadModelToFirebase(project_id , model)
-
