@@ -65,11 +65,24 @@ def uploadModel(finalModel, project_id):
     return "success"
 
 
-# Download models from firebase : Returns list of models
-def downloadModels(project_id):
-    pass
 
+# dowload Global Model url from Firebase
+def getGlobalModeldowloadURL(project_id):
+    ds = storage.bucket()
+    bob = ds.blob("globalModels/"+project_id)
+    dowloadURL  = bob._get_download_url(ds.client)      
+    return dowloadURL
 
-# Upload model to firebase : Returns response object with status property
-def uploadModel(model, project_id):
-    pass
+# upload Models to Firebase
+async def uploadModelToFirebase(project_id , model : UploadFile):
+    ds = storage.bucket()
+    bob = ds.blob(project_id+"/" + model.filename)
+    try:
+        bob.upload_from_file(model.file)
+        return "File Uploaded"
+    except Exception as e:
+        print(e)
+        return "Error"
+    finally:
+        model.file.close()
+     
