@@ -4,6 +4,7 @@ Firebase Credentials
 
 '''dummy imports please remove them if found'''
 from unicodedata import name
+from fastapi import UploadFile
 import firebase_admin
 from firebase_admin import storage
 import os
@@ -45,16 +46,15 @@ def downloadModels(project_id):
 
 # Upload model to firebase : Returns response object with status property
 def uploadModel(finalModel, project_id):
-    pkl.dump(finalModel, open("model-files/globalModel.pkl", 'wb'))
+    pkl.dump(finalModel, open("model-files/globalModel.pkl", 'wb')).
     ds = storage.bucket()
     print(ds.list_blobs)
     bob = ds.blob("globalModels/"+project_id)
     bob.upload_from_filename("model-files/globalModel.pkl")
 
+
     #removing all files in model-files/local and globalmodel.pkl
-    
-    
-    
+
     dir = 'model-files/local/'
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))
@@ -64,3 +64,25 @@ def uploadModel(finalModel, project_id):
     
     return "success"
 
+
+
+# dowload Global Model url from Firebase
+def getGlobalModeldowloadURL(project_id):
+    ds = storage.bucket()
+    bob = ds.blob("globalModels/"+project_id)
+    dowloadURL  = bob._get_download_url(ds.client)      
+    return dowloadURL
+
+# upload Models to Firebase
+async def uploadModelToFirebase(project_id , model : UploadFile):
+    ds = storage.bucket()
+    bob = ds.blob(project_id+"/" + model.filename)
+    try:
+        bob.upload_from_file(model.file)
+        return "File Uploaded"
+    except Exception as e:
+        print(e)
+        return "Error"
+    finally:
+        model.file.close()
+     
