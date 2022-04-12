@@ -4,6 +4,7 @@ Firebase Credentials
 
 '''dummy imports please remove them if found'''
 from unicodedata import name
+from fastapi import UploadFile
 import firebase_admin
 from firebase_admin import storage
 import os
@@ -50,5 +51,15 @@ def getGlobalModeldowloadURL(project_id):
     return dowloadURL
 
 # upload Models to Firebase
-def uploadModelsToFirebase(project_id):
-    pass
+async def uploadModelToFirebase(project_id , model : UploadFile):
+    ds = storage.bucket()
+    bob = ds.blob(project_id+"/" + model.filename)
+    try:
+        bob.upload_from_file(model.file)
+        return "File Uploaded"
+    except Exception as e:
+        print(e)
+        return "Error"
+    finally:
+        model.file.close()
+     
