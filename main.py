@@ -5,8 +5,9 @@
 from urllib import response
 from fastapi import FastAPI, UploadFile
 from aggregate import aggregate
-from firebase import getGlobalModeldowloadURL, uploadModelToFirebase
+from firebase import getGlobalModeldowloadURL, uploadModelToFirebase, downloadModels
 from firebase_init import initializeFirebase
+from Prediction import Prediction
 
 initializeFirebase()
 app = FastAPI()
@@ -40,3 +41,16 @@ def dowloadGlobalModelFromFirebase(project_id: str):
 @app.post('/uploadModelToFirebase/{project_id}')
 async def uploadModelToFB(project_id : str , model : UploadFile):
     return await uploadModelToFirebase(project_id , model)
+
+
+
+
+@app.get('/specialCaseTimeSeries/{project_id}/predict/{periods}/{freq}')
+def specialCaseTimeSeriesPredict(project_id: str, periods: int, freq: str):
+    models = downloadModels(project_id,True)
+    if(len(models) == 0):
+        return {
+            "response" : "No models Error"
+        }
+    result = Prediction(models,periods,freq)
+    return {"response": result}

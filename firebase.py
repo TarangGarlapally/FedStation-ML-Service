@@ -2,18 +2,20 @@
 Firebase Credentials 
 '''
 
-'''dummy imports please remove them if found'''
+'''imports'''
 from unicodedata import name
 from fastapi import UploadFile
 import firebase_admin
 from firebase_admin import storage
 import os
 import pickle as pkl
+import json
+from prophet.serialize import model_from_json
 ''''''
 
 
 # Download models from firebase : Returns list of models
-def downloadModels(project_id):
+def downloadModels(project_id,special=None):
     os.mkdir('model-files/')
     os.mkdir('model-files/local')
     ds = storage.bucket()
@@ -36,7 +38,11 @@ def downloadModels(project_id):
     files = os.listdir("model-files/local/")
     for file in files:
         filename = "model-files/local/"+file
-        loaded_model = pkl.load(open(filename, 'rb'))
+        if special == True:
+            with open(filename, 'r') as fin:
+                loaded_model = model_from_json(json.load(fin))  # Load model
+        else:
+            loaded_model = pkl.load(open(filename, 'rb'))
         models.append(loaded_model)
     
     return models
