@@ -4,8 +4,9 @@
 
 from urllib import response
 from fastapi import FastAPI, UploadFile
+from fastapi.responses import FileResponse
 from aggregate import aggregate
-from firebase import getGlobalModeldowloadURL, uploadModelToFirebase
+from firebase import getGlobalModelFile, getGlobalModeldowloadURL, uploadModelToFirebase
 from firebase_init import initializeFirebase
 
 initializeFirebase()
@@ -24,8 +25,8 @@ def projectAggregation(project_id: str):
     else:
         return {"response": "Error somewhere 🤧"}
 
-@app.get('/dowloadGlobalModelFromFirebase/{project_id}')
-def dowloadGlobalModelFromFirebase(project_id: str):
+@app.get('/dowloadGlobalModelURL/{project_id}')
+def dowloadGlobalModelURLFromFirebase(project_id: str):
     dowloadURL = getGlobalModeldowloadURL(project_id)
 
     if(len(dowloadURL)== 0):
@@ -37,6 +38,11 @@ def dowloadGlobalModelFromFirebase(project_id: str):
             "response" : dowloadURL
         }
 
+@app.get('/getGlobalModelFile/{project_id}')
+async def getGlobalModelFileFromFirebase(project_id: str):
+    await getGlobalModelFile(project_id)
+    return FileResponse('model-files/globalModel.pkl',media_type='application/octet-stream',filename=project_id)
+
 @app.post('/uploadModelToFirebase/{project_id}')
-async def uploadModelToFB(project_id : str , model : UploadFile):
-    return await uploadModelToFirebase(project_id , model)
+async def uploadModelToFB(project_id : str , upload_file : UploadFile):
+    return await uploadModelToFirebase(project_id , upload_file)

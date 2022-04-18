@@ -50,10 +50,15 @@ def getGlobalModeldowloadURL(project_id):
     dowloadURL  = bob._get_download_url(ds.client)      
     return dowloadURL
 
+async def getGlobalModelFile(project_id):
+    ds = storage.bucket()
+    bob = ds.blob("globalModels/"+project_id)
+    bob.download_to_filename('model-files/globalModel.pkl'); 
+
 # upload Models to Firebase
 async def uploadModelToFirebase(project_id , model : UploadFile):
     ds = storage.bucket()
-    bob = ds.blob(project_id+"/" + model.filename)
+    bob = ds.blob(project_id+"/" + model.filename +".pkl")
     try:
         bob.upload_from_file(model.file)
         return "File Uploaded"
