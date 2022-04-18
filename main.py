@@ -8,6 +8,7 @@ from fastapi.responses import FileResponse
 from aggregate import aggregate
 from firebase import getGlobalModelFile, getGlobalModeldowloadURL, uploadModelToFirebase
 from firebase_init import initializeFirebase
+from Prediction import Prediction
 
 initializeFirebase()
 app = FastAPI()
@@ -21,7 +22,7 @@ def welcome():
 def projectAggregation(project_id: str): 
     response = aggregate(project_id)
     if response == "success":
-        return {"response":"Okay 🥚"}
+        return {"response":"Okay"}
     else:
         return {"response": "Error somewhere 🤧"}
 

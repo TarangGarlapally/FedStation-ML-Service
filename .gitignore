@@ -128,5 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+
+# Heroku created this folder
+fedstation-ml-service/
 #firebase admin service account config 
 fedstation-firebase-firebase-adminsdk-gp3fm-d691bf3872.json
