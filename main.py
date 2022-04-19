@@ -45,12 +45,12 @@ async def uploadModelToFB(project_id : str , model : UploadFile):
 
 
 
-@app.get('/specialCaseTimeSeries/{project_id}/predict/{periods}/{freq}')
-def specialCaseTimeSeriesPredict(project_id: str, periods: int, freq: str):
-    models = downloadModels(project_id,True)
+@app.get('/specialCaseTimeSeries/{project_id}/predict/{periods}')
+def specialCaseTimeSeriesPredict(project_id: str, periods: int):
+    models = downloadModels(project_id)
     if(len(models) == 0):
         return {
             "response" : "No models Error"
         }
-    result = Prediction(models,periods,freq)
+    result = Prediction(models,periods)
     return {"response": result}

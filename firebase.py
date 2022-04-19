@@ -10,12 +10,11 @@ from firebase_admin import storage
 import os
 import pickle as pkl
 import json
-from prophet.serialize import model_from_json
 ''''''
 
 
 # Download models from firebase : Returns list of models
-def downloadModels(project_id,special=None):
+def downloadModels(project_id):
     os.mkdir('model-files/')
     os.mkdir('model-files/local')
     ds = storage.bucket()
@@ -38,11 +37,7 @@ def downloadModels(project_id,special=None):
     files = os.listdir("model-files/local/")
     for file in files:
         filename = "model-files/local/"+file
-        if special == True:
-            with open(filename, 'r') as fin:
-                loaded_model = model_from_json(json.load(fin))  # Load model
-        else:
-            loaded_model = pkl.load(open(filename, 'rb'))
+        loaded_model = pkl.load(open(filename, 'rb'))
         models.append(loaded_model)
     
     return models
