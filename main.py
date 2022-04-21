@@ -4,8 +4,9 @@
 
 from urllib import response
 from fastapi import FastAPI, UploadFile
+from fastapi.responses import FileResponse
 from aggregate import aggregate
-from firebase import getGlobalModeldowloadURL, uploadModelToFirebase, downloadModels
+from firebase import getGlobalModelFile, getGlobalModeldowloadURL, uploadModelToFirebase, downloadModels
 from firebase_init import initializeFirebase
 from Prediction import Prediction
 
@@ -25,8 +26,8 @@ def projectAggregation(project_id: str):
     else:
         return {"response": "Error somewhere 🤧"}
 
-@app.get('/dowloadGlobalModelFromFirebase/{project_id}')
-def dowloadGlobalModelFromFirebase(project_id: str):
+@app.get('/dowloadGlobalModelURL/{project_id}')
+def dowloadGlobalModelURLFromFirebase(project_id: str):
     dowloadURL = getGlobalModeldowloadURL(project_id)
 
     if(len(dowloadURL)== 0):
@@ -38,12 +39,10 @@ def dowloadGlobalModelFromFirebase(project_id: str):
             "response" : dowloadURL
         }
 
-@app.post('/uploadModelToFirebase/{project_id}')
-async def uploadModelToFB(project_id : str , model : UploadFile):
-    return await uploadModelToFirebase(project_id , model)
-
-
-
+@app.get('/getGlobalModelFile/{project_id}')
+async def getGlobalModelFileFromFirebase(project_id: str):
+    await getGlobalModelFile(project_id)
+    return FileResponse('model-files/globalModel.pkl',media_type='application/octet-stream',filename=project_id)
 
 @app.get('/specialCaseTimeSeries/{project_id}/predict/{periods}')
 def specialCaseTimeSeriesPredict(project_id: str, periods: int):
@@ -54,3 +53,8 @@ def specialCaseTimeSeriesPredict(project_id: str, periods: int):
         }
     result = Prediction(models,periods)
     return {"response": result}
+
+
+@app.post('/uploadModelToFirebase/{project_id}')
+async def uploadModelToFB(project_id : str , upload_file : UploadFile):
+    return await uploadModelToFirebase(project_id , upload_file)
