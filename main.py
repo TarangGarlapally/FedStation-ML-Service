@@ -19,7 +19,10 @@ def welcome():
 
 
 @app.get('/aggregate/{project_id}')
-def projectAggregation(project_id: str): 
+def projectAggregation(project_id: str):
+    if project_id == "exp_track":
+        return {"response":"Okay"}
+    
     response = aggregate(project_id)
     if response == "success":
         return {"response":"Okay"}
