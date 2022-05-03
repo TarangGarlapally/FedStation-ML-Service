@@ -3,7 +3,7 @@
 # http://127.0.0.1:8000/docs for API docs (swagger.ui)
 
 from urllib import response
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
 from aggregate import aggregate
 from firebase import getGlobalModelFile, getGlobalModeldowloadURL, uploadModelToFirebase, downloadModels
@@ -59,5 +59,5 @@ def specialCaseTimeSeriesPredict(project_id: str, periods: int):
 
 
 @app.post('/uploadModelToFirebase/{project_id}')
-async def uploadModelToFB(project_id : str , upload_file : UploadFile):
+async def uploadModelToFB(project_id : str , upload_file : UploadFile = File(...)):
     return await uploadModelToFirebase(project_id , upload_file)
