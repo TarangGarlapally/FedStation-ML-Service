@@ -7,11 +7,20 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
 from aggregate import aggregate
 from firebase import getGlobalModelFile, getGlobalModeldowloadURL, uploadModelToFirebase, downloadModels
+from fastapi.middleware.cors import CORSMiddleware
 from firebase_init import initializeFirebase
 from Prediction import Prediction
 
 initializeFirebase()
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get('/')
 def welcome():
