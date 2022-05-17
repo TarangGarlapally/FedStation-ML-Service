@@ -39,6 +39,12 @@ def downloadModels(project_id):
         filename = "model-files/local/"+file
         loaded_model = pkl.load(open(filename, 'rb'))
         models.append(loaded_model)
+
+    dir = 'model-files/local/'
+    for f in os.listdir(dir):
+        os.remove(os.path.join(dir, f))
+    os.rmdir('model-files/local')
+    os.rmdir('model-files')
     
     return models
 
