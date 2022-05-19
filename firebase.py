@@ -56,7 +56,7 @@ def uploadModel(finalModel, project_id):
     pkl.dump(finalModel, open("model-files/globalModel.pkl", 'wb'))
     ds = storage.bucket()
     print(ds.list_blobs)
-    bob = ds.blob("globalModels/"+project_id)
+    bob = ds.blob("globalModels/"+project_id+".pkl")
     bob.upload_from_filename("model-files/globalModel.pkl")
 
 
@@ -73,12 +73,12 @@ def uploadModel(finalModel, project_id):
 
 
 
-# dowload Global Model url from Firebase
-def getGlobalModeldowloadURL(project_id):
+# download Global Model url from Firebase
+def getGlobalModeldownloadURL(project_id):
     ds = storage.bucket()
-    bob = ds.blob("globalModels/"+project_id)
-    dowloadURL  = bob._get_download_url(ds.client)      
-    return dowloadURL
+    bob = ds.blob("globalModels/"+project_id+".pkl")
+    downloadURL  = bob._get_download_url(ds.client)      
+    return downloadURL
 
 async def getGlobalModelFile(project_id):
     ds = storage.bucket()

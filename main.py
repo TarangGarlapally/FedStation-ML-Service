@@ -6,7 +6,7 @@ from urllib import response
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
 from aggregate import aggregate
-from firebase import getGlobalModelFile, getGlobalModeldowloadURL, uploadModelToFirebase, downloadModels
+from firebase import getGlobalModelFile, getGlobalModeldownloadURL, uploadModelToFirebase, downloadModels
 from fastapi.middleware.cors import CORSMiddleware
 from firebase_init import initializeFirebase
 from Prediction import Prediction
@@ -38,17 +38,17 @@ def projectAggregation(project_id: str):
     else:
         return {"response": "Error somewhere 🤧"}
 
-@app.get('/dowloadGlobalModelURL/{project_id}')
-def dowloadGlobalModelURLFromFirebase(project_id: str):
-    dowloadURL = getGlobalModeldowloadURL(project_id)
+@app.get('/downloadGlobalModelURL/{project_id}')
+def downloadGlobalModelURLFromFirebase(project_id: str):
+    downloadURL = getGlobalModeldownloadURL(project_id)
 
-    if(len(dowloadURL)== 0):
+    if(len(downloadURL)== 0):
         return {
             "response" : "Error"
         }
     else : 
         return {
-            "response" : dowloadURL
+            "response" : downloadURL
         }
 
 @app.get('/getGlobalModelFile/{project_id}')
