@@ -10,6 +10,7 @@ from firebase_admin import storage
 import os
 import pickle as pkl
 import json
+import sys
 ''''''
 
 
@@ -80,10 +81,20 @@ def getGlobalModeldownloadURL(project_id):
     downloadURL  = bob._get_download_url(ds.client)      
     return downloadURL
 
+
 async def getGlobalModelFile(project_id):
+    if not os.path.exists("model-files"):
+        os.makedirs("model-files")
     ds = storage.bucket()
-    bob = ds.blob("globalModels/"+project_id)
-    bob.download_to_filename('model-files/globalModel.pkl'); 
+    bob = ds.blob("globalModels/"+project_id+".pkl")
+    bob.download_to_filename("model-files/"+project_id+".pkl"); 
+
+def getGlobalModelFileForResult(project_id):
+    if not os.path.exists("model-files"):
+        os.makedirs("model-files")
+    ds = storage.bucket()
+    bob = ds.blob("globalModels/"+project_id+".pkl")
+    bob.download_to_filename("model-files/"+project_id+".pkl"); 
 
 # upload Models to Firebase
 async def uploadModelToFirebase(project_id , model : UploadFile):
@@ -97,4 +108,8 @@ async def uploadModelToFirebase(project_id , model : UploadFile):
         return "Error"
     finally:
         model.file.close()
-     
+
+def getInputProcessorFile(project_id):
+    ds = storage.bucket()
+    bob = ds.blob("InputProcessors/"+project_id+".py")
+    bob.download_to_filename(project_id+'.py');
