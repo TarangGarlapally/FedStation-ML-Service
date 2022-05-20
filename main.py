@@ -3,12 +3,11 @@
 # http://127.0.0.1:8000/docs for API docs (swagger.ui)
 
 from urllib import response
-from fastapi import FastAPI, File, UploadFile, Request
+from fastapi import FastAPI, File, UploadFile, Request, Form
 from fastapi.responses import FileResponse
 from aggregate import aggregate
-from firebase import getGlobalModelFile, getGlobalModeldownloadURL, uploadModelToFirebase, downloadModels
 from fastapi.middleware.cors import CORSMiddleware
-from firebase import getGlobalModelFile, getGlobalModeldowloadURL, uploadModelToFirebase, downloadModels, getInputProcessorFile, getGlobalModelFileForResult
+from firebase import getFile,getGlobalModelFile, getGlobalModeldownloadURL, uploadModelToFirebase,uploadInputProcessorFile, downloadModels, getInputProcessorFile, getGlobalModelFileForResult
 from firebase_init import initializeFirebase
 from Prediction import Prediction
 import importlib
@@ -31,6 +30,18 @@ app.add_middleware(
 @app.get('/')
 def welcome():
     return "Hello"
+
+@app.get('/fileDownload/{project_id}')
+def downloadFile(project_id):
+    downloadURL = getFile(project_id)
+    if(len(downloadURL)== 0):
+        return {
+            "response" : "Error"
+        }
+    else : 
+        return {
+            "response" : downloadURL
+        }
 
 
 @app.get('/aggregate/{project_id}')
@@ -76,6 +87,10 @@ def specialCaseTimeSeriesPredict(project_id: str, periods: int):
 @app.post('/uploadModelToFirebase/{project_id}')
 async def uploadModelToFB(project_id : str , upload_file : UploadFile = File(...)):
     return await uploadModelToFirebase(project_id , upload_file)
+
+@app.post('/uploadInputProcessFile')
+async def uploadInputProcessFile(file : UploadFile = File(...), id : str = Form(...)):
+    return uploadInputProcessorFile(id , file)
 
 @app.post('/getModelResult/{project_id}')
 async def getModelResult(project_id: str, input: Request):

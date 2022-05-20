@@ -81,6 +81,12 @@ def getGlobalModeldownloadURL(project_id):
     downloadURL  = bob._get_download_url(ds.client)      
     return downloadURL
 
+# Dummy function to download the file from firebase
+def getFile(project_id):
+    ds = storage.bucket()
+    bob = ds.blob("InputProcessors/"+project_id+".py")
+    downloadURL  = bob._get_download_url(ds.client)      
+    return downloadURL
 
 async def getGlobalModelFile(project_id):
     if not os.path.exists("model-files"):
@@ -108,6 +114,19 @@ async def uploadModelToFirebase(project_id , model : UploadFile):
         return "Error"
     finally:
         model.file.close()
+
+# upload input processing file to Firebase
+def uploadInputProcessorFile(project_id , inputProcessFile : UploadFile):
+    ds = storage.bucket()
+    bob = ds.blob("InputProcessors/"+project_id+".py")
+    try:
+        bob.upload_from_file(inputProcessFile.file)
+        return "File Uploaded"
+    except Exception as e:
+        print(e)
+        return "Error"
+    finally:
+        inputProcessFile.file.close()
 
 def getInputProcessorFile(project_id):
     ds = storage.bucket()
