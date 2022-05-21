@@ -88,7 +88,6 @@ def getFile(project_id):
     downloadURL  = bob._get_download_url(ds.client)      
     return downloadURL
 
-
 async def getGlobalModelFile(project_id):
     if not os.path.exists("model-files"):
         os.makedirs("model-files")
