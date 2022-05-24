@@ -1,6 +1,8 @@
 import firebase
 import os
 from sklearn.base import BaseEstimator
+from pmdarima.arima import auto_arima
+from Fedstation.EnsembleARIMA import EnsembleARIMA
 from SKLearn_Aggregators.LR_VC import LRAggregation
 from SKLearn_Aggregators.SVM_VC import SVMAggregation
 from SKLearn_Aggregators.NB_VC import NBAggregation
@@ -14,6 +16,12 @@ from SKLearn_Aggregators.KNN_VR import KNNRAggregation
 from SKLearn_Aggregators.SVM_VR import SVMRAggregation
 
 
+# Aggregation function for special models : Returns Ensemble model for the given special models
+def aggregateSpecial(models):
+    globalModel = EnsembleARIMA(models)
+    return globalModel
+
+
 # Aggregation function for TFlite models : Returns Ensemble model for the given TFlite models
 def aggregateTFlite(models):
     pass
@@ -23,35 +31,35 @@ def aggregateTFlite(models):
 #Aggregation function for SKlearn models : Returns Ensemble model for the given SKlearn models
 def aggregateSKlearn(models):
     if type(models[0]).__name__ == "LogisticRegression":
-        LRAggregation(models)
+        return LRAggregation(models)
     elif type(models[0]).__name__ == "SVC":
-        SVMAggregation(models)
+        return SVMAggregation(models)
     elif type(models[0]).__name__ == "GaussianNB":
-        NBAggregation(models)
+        return NBAggregation(models)
     elif type(models[0]).__name__ == "KNeighborsClassifier":
-        KNNAggregation(models)
+        return KNNAggregation(models)
     elif type(models[0]).__name__ == "MultinomialNB":
-        NBAggregation(models)
+        return NBAggregation(models)
     elif type(models[0]).__name__ == "BernoulliNB":
-        NBAggregation(models)
+        return NBAggregation(models)
     elif type(models[0]).__name__ == "ComplementNB":
-        NBAggregation(models)
+        return NBAggregation(models)
     elif type(models[0]).__name__ == "CategoricalNB":
-        NBAggregation(models)
+        return NBAggregation(models)
     elif type(models[0]).__name__ == "DecisionTreeClassifier":
-        DTAggregation(models)
+        return DTAggregation(models)
     elif type(models[0]).__name__ == "LinearRegression":
-        LnRAggregation(models)
+        return LnRAggregation(models)
     elif type(models[0]).__name__ == "Ridge":
-        RDGAggregation(models)
+        return RDGAggregation(models)
     elif type(models[0]).__name__ == "Lasso":
-        LSAggregation(models)
+        return LSAggregation(models)
     elif type(models[0]).__name__ == "DecisionTreeRegressor":
-        DTRAggregation(models)
+        return DTRAggregation(models)
     elif type(models[0]).__name__ == "KNeighborsRegressor":
-        KNNRAggregation(models)
+        return KNNRAggregation(models)
     elif type(models[0]).__name__ == "SVR":
-        SVMRAggregation(models)
+        return SVMRAggregation(models)
 
 
 # Main aggregate function : Returns Final Ensemble Model
@@ -59,9 +67,12 @@ def aggregate(project_id):
     models = firebase.downloadModels(project_id)
     try:
         if isinstance(models[0], BaseEstimator) == False:
-            finalModel = aggregateTFlite(models)
+                finalModel = aggregateTFlite(models)
         elif isinstance(models[0], BaseEstimator) == True:
-            finalModel = aggregateSKlearn(models)
+            if type(models[0]).__name__ == "ARIMA":
+                finalModel = aggregateSpecial(models)
+            else:
+                finalModel = aggregateSKlearn(models)
         result = firebase.uploadModel(finalModel, project_id)
         return result
     except:

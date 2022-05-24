@@ -3,6 +3,7 @@ Firebase Credentials
 '''
 
 '''imports'''
+from distutils.log import error
 from unicodedata import name
 from fastapi import UploadFile
 import firebase_admin
@@ -37,6 +38,7 @@ def downloadModels(project_id):
     models = list()
     files = os.listdir("model-files/local/")
     for file in files:
+        print(file)
         filename = "model-files/local/"+file
         loaded_model = pkl.load(open(filename, 'rb'))
         models.append(loaded_model)
@@ -54,20 +56,21 @@ def downloadModels(project_id):
 
 # Upload model to firebase : Returns response object with status property
 def uploadModel(finalModel, project_id):
+    if os.path.isdir('model-files/') == False:
+        os.mkdir('model-files/')
     pkl.dump(finalModel, open("model-files/globalModel.pkl", 'wb'))
     ds = storage.bucket()
-    print(ds.list_blobs)
     bob = ds.blob("globalModels/"+project_id+".pkl")
     bob.upload_from_filename("model-files/globalModel.pkl")
 
 
     #removing all files in model-files/local and globalmodel.pkl
 
-    dir = 'model-files/local/'
-    for f in os.listdir(dir):
-        os.remove(os.path.join(dir, f))
+    # dir = 'model-files/local/'
+    # for f in os.listdir(dir):
+    #     os.remove(os.path.join(dir, f))
     os.remove('model-files/globalModel.pkl')
-    os.rmdir('model-files/local')
+    # os.rmdir('model-files/local')
     os.rmdir('model-files')
     
     return "success"

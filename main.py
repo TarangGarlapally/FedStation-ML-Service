@@ -45,10 +45,7 @@ def downloadFile(project_id):
 
 
 @app.get('/aggregate/{project_id}')
-def projectAggregation(project_id: str):
-    if project_id == "exp_track":
-        return {"response":"Okay"}
-    
+def projectAggregation(project_id: str):    
     response = aggregate(project_id)
     if response == "success":
         return {"response":"Okay"}
@@ -73,15 +70,15 @@ async def getGlobalModelFileFromFirebase(project_id: str):
     await getGlobalModelFile(project_id)
     return FileResponse('model-files/'+project_id+'.pkl',media_type='application/octet-stream',filename=project_id)
 
-@app.get('/specialCaseTimeSeries/{project_id}/predict/{periods}')
-def specialCaseTimeSeriesPredict(project_id: str, periods: int):
-    models = downloadModels(project_id)
-    if(len(models) == 0):
-        return {
-            "response" : "No models Error"
-        }
-    result = Prediction(models,periods)
-    return {"response": result}
+# @app.get('/specialCaseTimeSeries/{project_id}/predict/{periods}')
+# def specialCaseTimeSeriesPredict(project_id: str, periods: int):
+#     models = downloadModels(project_id)
+#     if(len(models) == 0):
+#         return {
+#             "response" : "No models Error"
+#         }
+#     result = Prediction(models,periods)
+#     return {"response": result}
 
 
 @app.post('/uploadModelToFirebase/{project_id}')
