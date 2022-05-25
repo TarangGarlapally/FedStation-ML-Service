@@ -8,5 +8,4 @@ firebase_admin==5.2.0
 pmdarima
 python-multipart
 pickle-mixin
--i https://test.pypi.org/simple/  
-Fedstation==0.0.4
+-i https://test.pypi.org/simple/ Fedstation==0.0.4
