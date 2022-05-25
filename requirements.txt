@@ -8,4 +8,4 @@ firebase_admin==5.2.0
 pmdarima
 python-multipart
 pickle-mixin
-https://test.pypi.org/simple/Fedstation
+https://test-files.pythonhosted.org/packages/d3/33/bbaab820edbfb173ceffd3d6e804b46f51754ba6386aabf8f4f625b1466a/Fedstation-0.0.5.tar.gz#sha256=2b4574e1047d210bd5602ad58f72d62e95111e1d57851ada3b11d0745e6d38f1
