@@ -55,8 +55,10 @@ def projectAggregation(project_id: str):
         response = aggregate(project_id)
         if response == "success":
             return {"response":"Okay"}
-        else:
-            return {"response": "Error somewhere 🤧"}
+        elif response == "downloaderror":
+            return {"error": "Error in downloading the files"}
+        elif response == "uploaderror":
+            return {"error": "Error in uploading the model file"}
     except Exception as e:
         return {"error": e}
 
@@ -127,9 +129,17 @@ async def getModelResult(project_id: str, input: Request):
             shutil.rmtree("./__pycache__")
             
         # download input processor file
-        getInputProcessorFile(project_id)
+        result1 = getInputProcessorFile(project_id)
+        if result1 == "error":
+            return {
+                "error":"Error while fetching Input Processing file"
+            }
         # download global model
-        getGlobalModelFileForResult(project_id)
+        result2 = getGlobalModelFileForResult(project_id)
+        if result2 == "error":
+            return {
+                "error":"Error while fetching Global Model file"
+            }
         
         model = None
         # load model

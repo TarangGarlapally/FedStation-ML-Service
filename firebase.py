@@ -17,38 +17,41 @@ import sys
 
 # Download models from firebase : Returns list of models
 def downloadModels(project_id):
-    if os.path.isdir('model-file/') == False:
-        os.mkdir('model-files/')
-    if os.path.isdir('model-files/local/') == False:
-        os.mkdir('model-files/local/')
-    ds = storage.bucket()
-    file_names = list()
-    L = len(project_id)
-    for b in ds.list_blobs(): 
-        file_names.append(b.name)
-    
-    for file_path in file_names :
-        file_dir = file_path[0:L]
-        if(file_dir == project_id and len(file_path) > L+1):
-            print("matched",file_path[L+1:])
-            bob = ds.blob(file_path)
-            bob.download_to_filename("model-files/local/"+ file_path[L+1:])
-    
-    # uploading models onto list 
-    models = list()
-    files = os.listdir("model-files/local/")
-    for file in files:
-        filename = "model-files/local/"+file
-        loaded_model = pkl.load(open(filename, 'rb'))
-        models.append(loaded_model)
+    try:
+        if os.path.isdir('model-file/') == False:
+            os.mkdir('model-files/')
+        if os.path.isdir('model-files/local/') == False:
+            os.mkdir('model-files/local/')
+        ds = storage.bucket()
+        file_names = list()
+        L = len(project_id)
+        for b in ds.list_blobs(): 
+            file_names.append(b.name)
+        
+        for file_path in file_names :
+            file_dir = file_path[0:L]
+            if(file_dir == project_id and len(file_path) > L+1):
+                print("matched",file_path[L+1:])
+                bob = ds.blob(file_path)
+                bob.download_to_filename("model-files/local/"+ file_path[L+1:])
+        
+        # uploading models onto list 
+        models = list()
+        files = os.listdir("model-files/local/")
+        for file in files:
+            filename = "model-files/local/"+file
+            loaded_model = pkl.load(open(filename, 'rb'))
+            models.append(loaded_model)
 
-    dir = 'model-files/local/'
-    for f in os.listdir(dir):
-        os.remove(os.path.join(dir, f))
-    os.rmdir('model-files/local')
-    os.rmdir('model-files')
-    
-    return models
+        dir = 'model-files/local/'
+        for f in os.listdir(dir):
+            os.remove(os.path.join(dir, f))
+        os.rmdir('model-files/local')
+        os.rmdir('model-files')
+        
+        return models
+    except:
+        return "error"
 
 
 
@@ -98,11 +101,18 @@ async def getGlobalModelFile(project_id):
     bob.download_to_filename("model-files/"+project_id+".pkl"); 
 
 def getGlobalModelFileForResult(project_id):
-    if not os.path.exists("model-files"):
-        os.makedirs("model-files")
-    ds = storage.bucket()
-    bob = ds.blob("globalModels/"+project_id+".pkl")
-    bob.download_to_filename("model-files/"+project_id+".pkl"); 
+    try:
+        if not os.path.exists("model-files"):
+            os.makedirs("model-files")
+        ds = storage.bucket()
+        bob = ds.blob("globalModels/"+project_id+".pkl")
+        if bob.exists():
+            bob.download_to_filename("model-files/"+project_id+".pkl");
+        else:
+            return "error"
+        return "success"
+    except Exception as e:
+        return "error"
 
 # upload Models to Firebase
 async def uploadModelToFirebase(project_id , model : UploadFile):
@@ -131,6 +141,12 @@ def uploadInputProcessorFile(project_id , inputProcessFile : UploadFile):
         inputProcessFile.file.close()
 
 def getInputProcessorFile(project_id):
-    ds = storage.bucket()
-    bob = ds.blob("InputProcessors/"+project_id+".py")
-    bob.download_to_filename(project_id+'.py');
+    try:
+        ds = storage.bucket()
+        bob = ds.blob("InputProcessors/"+project_id+".py")
+        if bob.exists():
+            bob.download_to_filename(project_id+'.py');
+        else:
+            return "error"
+    except Exception as e:
+        return "error"

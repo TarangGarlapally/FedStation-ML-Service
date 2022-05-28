@@ -65,6 +65,8 @@ def aggregateSKlearn(models):
 # Main aggregate function : Returns Final Ensemble Model
 def aggregate(project_id): 
     models = firebase.downloadModels(project_id)
+    if models == "error" or models == []:
+        return "downloaderror"
     try:
         if isinstance(models[0], BaseEstimator) == False:
                 finalModel = aggregateTFlite(models)
@@ -74,6 +76,8 @@ def aggregate(project_id):
             else:
                 finalModel = aggregateSKlearn(models)
         result = firebase.uploadModel(finalModel, project_id)
+        if result == "error":
+            return "uploaderror"
         return result
     except:
         return "error"
