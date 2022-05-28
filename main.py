@@ -33,42 +33,61 @@ def welcome():
 
 @app.get('/fileDownload/{project_id}')
 def downloadFile(project_id):
-    downloadURL = getFile(project_id)
-    if(len(downloadURL)== 0):
+    try:
+        downloadURL = getFile(project_id)
+        if(len(downloadURL)== 0):
+            return {
+                "response" : "Error"
+            }
+        else : 
+            return {
+                "response" : downloadURL
+            }
+    except Exception as e:
         return {
-            "response" : "Error"
-        }
-    else : 
-        return {
-            "response" : downloadURL
+            "error" : e
         }
 
 
 @app.get('/aggregate/{project_id}')
 def projectAggregation(project_id: str):    
-    response = aggregate(project_id)
-    if response == "success":
-        return {"response":"Okay"}
-    else:
-        return {"response": "Error somewhere 🤧"}
+    try:
+        response = aggregate(project_id)
+        if response == "success":
+            return {"response":"Okay"}
+        else:
+            return {"response": "Error somewhere 🤧"}
+    except Exception as e:
+        return {"error": e}
+
 
 @app.get('/downloadGlobalModelURL/{project_id}')
 def downloadGlobalModelURLFromFirebase(project_id: str):
-    downloadURL = getGlobalModeldownloadURL(project_id)
+    try:
+        downloadURL = getGlobalModeldownloadURL(project_id)
 
-    if(len(downloadURL)== 0):
+        if(len(downloadURL)== 0):
+            return {
+                "error" : "No model found"
+            }
+        else : 
+            return {
+                "response" : downloadURL
+            }
+    except Exception as e:
         return {
-            "response" : "Error"
-        }
-    else : 
-        return {
-            "response" : downloadURL
+            "error" : e
         }
 
 @app.get('/getGlobalModelFile/{project_id}')
 async def getGlobalModelFileFromFirebase(project_id: str):
-    await getGlobalModelFile(project_id)
-    return FileResponse('model-files/'+project_id+'.pkl',media_type='application/octet-stream',filename=project_id)
+    try:
+        await getGlobalModelFile(project_id)
+        return FileResponse('model-files/'+project_id+'.pkl',media_type='application/octet-stream',filename=project_id)
+    except Exception as e:
+        return {
+            "error" : e
+        }
 
 # @app.get('/specialCaseTimeSeries/{project_id}/predict/{periods}')
 # def specialCaseTimeSeriesPredict(project_id: str, periods: int):
@@ -83,31 +102,49 @@ async def getGlobalModelFileFromFirebase(project_id: str):
 
 @app.post('/uploadModelToFirebase/{project_id}')
 async def uploadModelToFB(project_id : str , upload_file : UploadFile = File(...)):
-    return await uploadModelToFirebase(project_id , upload_file)
+    try:
+        return await uploadModelToFirebase(project_id , upload_file)
+    except Exception as e:
+        return {
+            "error" : e
+        }
+
 
 @app.post('/uploadInputProcessFile')
 async def uploadInputProcessFile(file : UploadFile = File(...), id : str = Form(...)):
-    return uploadInputProcessorFile(id , file)
+    try:
+        return uploadInputProcessorFile(id , file)
+    except Exception as e:
+        return {
+            "error" : e
+        }
+
 
 @app.post('/getModelResult/{project_id}')
 async def getModelResult(project_id: str, input: Request):
-    if os.path.exists("./__pycache__"):
-        shutil.rmtree("./__pycache__")
+    try:
+        if os.path.exists("./__pycache__"):
+            shutil.rmtree("./__pycache__")
+            
+        # download input processor file
+        getInputProcessorFile(project_id)
+        # download global model
+        getGlobalModelFileForResult(project_id)
         
-    # download input processor file
-    getInputProcessorFile(project_id)
-    # download global model
-    getGlobalModelFileForResult(project_id)
-    
-    model = None
-    # load model
-    with open("./model-files/"+project_id+".pkl", 'rb') as f:
-        model = pickle.load(f)
+        model = None
+        # load model
+        with open("./model-files/"+project_id+".pkl", 'rb') as f:
+            model = pickle.load(f)
 
-    test = __import__(project_id)
+        test = __import__(project_id)
 
-    result = test.processInputAndPredict(await input.json(), model)
-    
-    os.remove("./"+project_id+".py")
-    os.remove("./model-files/"+project_id+".pkl")
-    return result
+        result = test.processInputAndPredict(await input.json(), model)
+        
+        os.remove("./"+project_id+".py")
+        os.remove("./model-files/"+project_id+".pkl")
+        os.rmdir('model-files')
+        return result
+    except Exception as e:
+        return {
+            "error" : e
+        }
